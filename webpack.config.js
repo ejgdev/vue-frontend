@@ -1,4 +1,5 @@
 const path = require('path')
+const express = require('express')
 const { VueLoaderPlugin } = require('vue-loader')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -34,6 +35,14 @@ module.exports = {
         test: /\.ts$/,
         loader: 'ts-loader',
         options: { appendTsSuffixTo: [/\.vue$/] }
+      },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(png|j?g|svg|gif)?$/,
+        use: 'file-loader?name=./images/platforms/[name].[ext]'
       }
     ]
   },
@@ -53,6 +62,9 @@ module.exports = {
           fs.createReadStream('./json/question1.json').pipe(resp)
         }
       }
+    },
+    before: (app) => {
+      app.use('/images/', express.static(path.resolve(__dirname, 'images/platforms')))
     }
   }
 }
