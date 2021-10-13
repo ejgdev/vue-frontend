@@ -2,6 +2,7 @@ const path = require('path')
 const { VueLoaderPlugin } = require('vue-loader')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const fs = require('fs')
 
 module.exports = {
   entry: {
@@ -42,5 +43,16 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'public/index.html')
     })
-  ]
+  ],
+  devServer: {
+    proxy: {
+      '/json': {
+        selfHandleResponse: true,
+        bypass (req, resp) {
+          resp.header('Content-Type', 'application/json')
+          fs.createReadStream('./json/question1.json').pipe(resp)
+        }
+      }
+    }
+  }
 }
